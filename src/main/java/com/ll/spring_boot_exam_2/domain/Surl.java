@@ -1,5 +1,6 @@
-package com.ll.spring_boot_exam_2.controller;
+package com.ll.spring_boot_exam_2.domain;
 
+import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
@@ -22,5 +23,12 @@ public class Surl {
     private String url;
 
     private String body;
+
+    @Setter(AccessLevel.NONE)
+    private long count;
+
+    public void increaseCount() {
+        count++;
+    }
 
 }
