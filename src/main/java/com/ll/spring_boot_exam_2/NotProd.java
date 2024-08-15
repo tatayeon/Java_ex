@@ -2,7 +2,9 @@ package com.ll.spring_boot_exam_2;
 
 
 import com.ll.spring_boot_exam_2.domain.Article;
+import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.service.ArticleService;
+import com.ll.spring_boot_exam_2.service.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -22,6 +24,7 @@ public class NotProd {
         @Autowired
         private NotProd self;
         private final ArticleService articleService;
+        private final MemberService memberService;
 
         @Bean
         public ApplicationRunner initNotProd() {
@@ -35,6 +38,10 @@ public class NotProd {
         public void work1(){
             if(articleService.count() > 0) return;  // -> 데이터베이스 숫자 세는거 숫자가 있으면 굳지 만들지 않음
             //이렇게 해야지만 RsData안에 있는 값을 뽑아서 사용이 가능하다.
+
+            Member member1 = memberService.join("user1", "1234", "유저1").getData();
+            Member member2 = memberService.join("user2", "1234", "유저1").getData();
+
             Article article = articleService.write("제목1", "내용1").getData();
             Article article1 = articleService.write("제목2", "내용2").getData();
 

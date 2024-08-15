@@ -5,6 +5,7 @@ import com.ll.spring_boot_exam_2.domain.Article;
 import com.ll.spring_boot_exam_2.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,10 +16,12 @@ public class ArticleService {
 
     private final ArticleRepository articleRepository;
 
+    @Transactional(readOnly = true)
     public long count(){
         return articleRepository.count();
     }
 
+    @Transactional
     public RsData<Article> write(String title, String body){
         Article article = Article.builder()
                 .title(title)
@@ -30,14 +33,17 @@ public class ArticleService {
         return RsData.of("%d번 게시물이 작성되었습니다.".formatted(article.getId()), article);
     }
 
+    @Transactional
     public void delete(long id){
         articleRepository.deleteById(id);
     }
 
+    @Transactional(readOnly = true)
     public Optional<Article> findById(long id){
         return articleRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
     public List<Article> findAll(){
         return articleRepository.findAll();
     }

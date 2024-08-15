@@ -1,0 +1,24 @@
+package com.ll.spring_boot_exam_2.jpaEntity;
+
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.MappedSuperclass;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import jakarta.persistence.Id;
+import static jakarta.persistence.GenerationType.IDENTITY;
+
+@MappedSuperclass
+@Getter
+@EqualsAndHashCode(onlyExplicitlyIncluded = true)
+public abstract class BaseEntity {
+
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @EqualsAndHashCode.Include
+    private Long id;
+
+    public String getModelName() {
+        String simpleName = this.getClass().getSimpleName();
+        return Character.toLowerCase(simpleName.charAt(0)) + simpleName.substring(1);
+    }
+}
