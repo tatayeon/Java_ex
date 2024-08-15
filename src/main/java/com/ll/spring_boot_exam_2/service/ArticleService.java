@@ -2,6 +2,7 @@ package com.ll.spring_boot_exam_2.service;
 
 import com.ll.spring_boot_exam_2.RsData;
 import com.ll.spring_boot_exam_2.domain.Article;
+import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +23,7 @@ public class ArticleService {
     }
 
     @Transactional
-    public RsData<Article> write(String title, String body){
+    public RsData<Article> write(Member author, String title, String body){
         Article article = Article.builder()
                 .title(title)
                 .body(body)

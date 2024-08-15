@@ -42,8 +42,11 @@ public class NotProd {
             Member member1 = memberService.join("user1", "1234", "유저1").getData();
             Member member2 = memberService.join("user2", "1234", "유저1").getData();
 
-            Article article = articleService.write("제목1", "내용1").getData();
-            Article article1 = articleService.write("제목2", "내용2").getData();
+            Article article1= articleService.write(member1,"제목1", "내용1").getData();
+            Article article2 = articleService.write(member1,"제목2", "내용2").getData();
+
+            Article article3 = articleService.write(member2,"제목1", "내용1").getData();
+            Article article4 = articleService.write(member2,"제목2", "내용2").getData();
 
             article1.setTitle("새로운 제목");
 
