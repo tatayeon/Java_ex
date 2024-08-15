@@ -1,5 +1,6 @@
 package com.ll.spring_boot_exam_2.service;
 
+import com.ll.spring_boot_exam_2.RsData;
 import com.ll.spring_boot_exam_2.domain.Article;
 import com.ll.spring_boot_exam_2.repository.ArticleRepository;
 import lombok.RequiredArgsConstructor;
@@ -18,13 +19,15 @@ public class ArticleService {
         return articleRepository.count();
     }
 
-    public Article write(String title, String body){
+    public RsData<Article> write(String title, String body){
         Article article = Article.builder()
                 .title(title)
                 .body(body)
                 .build();
 
-        return articleRepository.save(article);
+        articleRepository.save(article);
+
+        return RsData.of("%d번 게시물이 작성되었습니다.".formatted(article.getId()), article);
     }
 
     public void delete(long id){
