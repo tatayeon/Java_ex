@@ -1,24 +1,16 @@
 package com.ll.spring_boot_exam_2.domain;
 
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
-
-import java.time.LocalDateTime;
+import com.ll.spring_boot_exam_2.jpaEntity.BaseEntity;
+import jakarta.persistence.Entity;
+import lombok.*;
 
 @Getter
 @Setter
 @Builder
-public class Surl {
-
-    private long id;
-
-    @Builder.Default
-    private LocalDateTime createTime = LocalDateTime.now();
-
-    @Builder.Default
-    private LocalDateTime updateTime = LocalDateTime.now(); ;
+@Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class Surl extends BaseEntity {
 
     private String url;
 
