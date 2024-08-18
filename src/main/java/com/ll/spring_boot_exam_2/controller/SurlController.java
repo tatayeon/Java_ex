@@ -1,6 +1,8 @@
 package com.ll.spring_boot_exam_2.controller;
 
 import com.ll.spring_boot_exam_2.RsData;
+import com.ll.spring_boot_exam_2.domain.Member;
+import com.ll.spring_boot_exam_2.domain.Rq;
 import com.ll.spring_boot_exam_2.domain.Surl;
 import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.SurlService;
@@ -16,20 +18,22 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 public class SurlController {
-
+    private final Rq rq;
     private final SurlService surlService;
 
     @GetMapping("/add ")
     @ResponseBody
     public RsData<Surl> add(String body, String url){
-
-        return surlService.add(body, url);
+        Member member = rq.getMember(); //현제 브라우저로 로그인한 회원 정보
+        return surlService.add(url ,body, member);
     }
 
     @GetMapping("/s/{body}/**")
     @ResponseBody
     public RsData<Surl> add(@PathVariable String body,
                      HttpServletRequest request){
+        Member member = rq.getMember();
+
         String url = request.getRequestURI();
 
         if(request.getQueryString() != null){
@@ -39,7 +43,7 @@ public class SurlController {
         String[] urlBits = url.split("/", 4);
         url = urlBits[3];
 
-        return surlService.add(body, url);
+        return surlService.add(url, body, member);
     }
 
     @GetMapping("/g/{id}")

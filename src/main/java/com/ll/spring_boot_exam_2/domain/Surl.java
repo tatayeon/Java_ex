@@ -2,6 +2,7 @@ package com.ll.spring_boot_exam_2.domain;
 
 import com.ll.spring_boot_exam_2.jpaEntity.BaseEntity;
 import jakarta.persistence.Entity;
+import jakarta.persistence.ManyToOne;
 import lombok.*;
 
 @Getter
@@ -15,6 +16,9 @@ public class Surl extends BaseEntity {
     private String url;
 
     private String body;
+
+    @ManyToOne
+    private Member author;
 
     @Setter(AccessLevel.NONE)
     private long count;

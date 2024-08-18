@@ -1,6 +1,7 @@
 package com.ll.spring_boot_exam_2.service;
 
 import com.ll.spring_boot_exam_2.RsData;
+import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.domain.Surl;
 import com.ll.spring_boot_exam_2.repository.SurlRepository;
 import lombok.RequiredArgsConstructor;
@@ -22,9 +23,10 @@ public class SurlService {
     }
 
     @Transactional
-    public RsData<Surl> add(String url, String body) {
+    public RsData<Surl> add(String url, String body, Member author) {
 
         Surl surl = Surl.builder()
+                .author(author)
                 .url(url)
                 .body(body)
                 .build();
