@@ -2,9 +2,9 @@ package com.ll.spring_boot_exam_2.controller;
 
 import com.ll.spring_boot_exam_2.RsData;
 import com.ll.spring_boot_exam_2.domain.Member;
-import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.MemberService;
-import com.ll.spring_boot_exam_2.util.ut;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -25,27 +25,18 @@ public class ApiV1MemberController {
     @AllArgsConstructor
     @Getter
     public static class MemberJoinReqBody{
+        @NotBlank(message = "아이디를 입력해주세여") //val으로 걸어두고 사용할 때도 꼭 valid를 사용해야한다.
         private String username;
+        @NotBlank
         private String password;
+        @NotBlank
         private String nickname;
     }
 
     //CRUD에 맞춰서 사용해야 한다.
 
     @PostMapping("") //post는 생성
-    public RsData<Member> join(@RequestBody MemberJoinReqBody reqBody) {
-
-        if(ut.str.isBlank(reqBody.username)){
-            throw new GlobalException("400-1", "아이디를 입력해주세요"); //throw으로 하는 이유: 리턴 표기가 정밀하게 표현하기가 어렵다. + 그리고 ExceptionHandler사용
-        }
-
-        if(ut.str.isBlank(reqBody.password)){
-            throw new GlobalException("400-1", "아이디를 입력해주세요");
-        }
-
-        if(ut.str.isBlank(reqBody.nickname)){
-            throw new GlobalException("400-1", "닉네임을 입력해주세요");
-        }
+    public RsData<Member> join(@RequestBody @Valid MemberJoinReqBody reqBody) {
         return memberService.join(reqBody.username, reqBody.password, reqBody.nickname);
 
     }

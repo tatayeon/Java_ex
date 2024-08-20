@@ -26,13 +26,33 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(GlobalException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
-    public ResponseEntity<String> handleException2(GlobalException ex){
+    public ResponseEntity<RsData<Empty>> handleException2(GlobalException ex){
+        log.debug("handler Exception start");
+
         RsData<Empty> rsData = ex.getRsData();
 
-        rsData.getStatusCode();
-
-        log.debug("handle exception2");
-        return ResponseEntity.status(rsData.getStatusCode()).body(rsData.getMsg());
+        return ResponseEntity.status(rsData.getStatusCode()).body(rsData);
     }
+
+//    @ExceptionHandler(MethodArgumentNotValidException.class)
+//    @ResponseBody
+//    public ResponseEntity<RsData<Empty>> handleException(MethodArgumentNotValidException ex){
+//        String resultCode = "400-VALIDATION_ERROR";
+//
+//        List<String> errors = ex.getBindingResult().getFieldErrors().stream()
+//                .map(fieldError -> fieldError.getField() + ": " + fieldError.getDefaultMessage())
+//                .collect(Collectors.toList());
+//
+//        String msg = String.join(", ", errors);
+//
+//        return handleGlobalException(
+//                new GlobalException(
+//                        resultCode,
+//                        msg
+//                )
+//        );
+//
+//    }
+
 
 }
