@@ -5,6 +5,7 @@ import com.ll.spring_boot_exam_2.RsData;
 import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.MemberService;
+import com.ll.spring_boot_exam_2.util.ut;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,12 +21,16 @@ public class MemberController {
     @GetMapping("/join")
     @ResponseBody
     public RsData join(String username, String password, String nickname){
-        if(username==null || username.isBlank()){
+        if(ut.str.isBlank(username)){
+            throw new GlobalException("40 0-1", "아이디를 입력해주세요");
+        }
+
+        if(ut.str.isBlank(password)){
             throw new GlobalException("400-1", "아이디를 입력해주세요");
         }
 
-        if(password==null || password.isBlank()){
-            throw new GlobalException("400-1", "아이디를 입력해주세요");
+        if(ut.str.isBlank(nickname)){
+            throw new GlobalException("400-1", "닉네임을 입력해주세요");
         }
 
         RsData<Member> joinRs = memberService.join(username,password,nickname);
