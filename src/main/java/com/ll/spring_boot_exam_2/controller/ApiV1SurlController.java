@@ -4,6 +4,7 @@ import com.ll.spring_boot_exam_2.RsData;
 import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.domain.Rq;
 import com.ll.spring_boot_exam_2.domain.Surl;
+import com.ll.spring_boot_exam_2.dto.SurlDTO;
 import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.SurlService;
 import jakarta.validation.Valid;
@@ -36,7 +37,7 @@ public class ApiV1SurlController {
     @Getter
     @AllArgsConstructor
     public static class SurlAddRespBody{
-        private Surl item;
+        private SurlDTO item;
     }
 
     @PostMapping("/add")
@@ -48,14 +49,15 @@ public class ApiV1SurlController {
         RsData<Surl> addRs = surlService.add(reqBody.getBody(), reqBody.getUrl(), member);
 
         return addRs.newDataOf(
-                new SurlAddRespBody(addRs.getData())
-        );
+                new SurlAddRespBody(
+                        new SurlDTO(addRs.getData())
+                ));
     }
 
     @Getter
     @AllArgsConstructor
     public static class SurlGetRespBody{
-        private Surl item;
+        private SurlDTO item;
     }
 
     @GetMapping("/{id}")
@@ -65,7 +67,9 @@ public class ApiV1SurlController {
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
         return RsData.of(
-                new SurlGetRespBody(surl)
+                new SurlGetRespBody(
+                        new SurlDTO(surl)
+                )
         );
     }
 

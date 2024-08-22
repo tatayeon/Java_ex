@@ -1,6 +1,6 @@
 package com.ll.spring_boot_exam_2.domain;
 
-import com.ll.spring_boot_exam_2.jpaEntity.BaseEntity;
+import com.ll.spring_boot_exam_2.jpaEntity.BaseTime;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToOne;
 import lombok.*;
@@ -11,7 +11,7 @@ import lombok.*;
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
-public class Surl extends BaseEntity {
+public class Surl extends BaseTime {
 
     private String url;
 

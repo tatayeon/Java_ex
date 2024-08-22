@@ -2,6 +2,7 @@ package com.ll.spring_boot_exam_2.controller;
 
 import com.ll.spring_boot_exam_2.RsData;
 import com.ll.spring_boot_exam_2.domain.Member;
+import com.ll.spring_boot_exam_2.dto.MemberDTO;
 import com.ll.spring_boot_exam_2.service.MemberService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -37,7 +38,7 @@ public class ApiV1MemberController {
     @AllArgsConstructor
     @Getter
     public static class MemberJoinRespBody{
-        Member item;
+        MemberDTO item;
     }
 
     //CRUD에 맞춰서 사용해야 한다.
@@ -48,7 +49,11 @@ public class ApiV1MemberController {
        RsData<Member> joinRs = memberService.join(reqBody.username, reqBody.password, reqBody.nickname);
 
        return joinRs.newDataOf( // 이렇게 하면 joinRs를 기반으로 하지만 아래의 값을 데이터로 한 것으로 나온다 newDataof 때문에
-               new MemberJoinRespBody(joinRs.getData())
+               new MemberJoinRespBody(
+                       new MemberDTO(
+                               joinRs.getData()
+                       )
+               )
        );
     }
 
