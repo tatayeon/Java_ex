@@ -24,4 +24,8 @@ public class Rq {
     public String getCurrentUrlPath() {
         return req.getRequestURI();
     }
+
+    public void setStatusCode(int statusCode) {
+        resp.setStatus(statusCode);
+    }
 }

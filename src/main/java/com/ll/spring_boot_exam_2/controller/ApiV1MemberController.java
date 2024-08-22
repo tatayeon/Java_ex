@@ -20,8 +20,8 @@ public class ApiV1MemberController {
 
     private final MemberService memberService;
 
-
     //이렇게 요청이 들어올 때의 바디를 따로 빼서 만들어도 가능하다~
+    //여기는 내가 입력받을 것
     @AllArgsConstructor
     @Getter
     public static class MemberJoinReqBody{
@@ -32,14 +32,24 @@ public class ApiV1MemberController {
         @NotBlank
         private String nickname;
     }
+    //여기는 내가 내보내고 싶은 것
+    //data안쪽을 디자인 할 수 있다.
+    @AllArgsConstructor
+    @Getter
+    public static class MemberJoinRespBody{
+        Member item;
+    }
 
     //CRUD에 맞춰서 사용해야 한다.
-
+    //클라이언트가 접속할 수 있는것 = 엔드포인트
     @PostMapping("") //post는 생성
-    public RsData<Member> join(@RequestBody @Valid MemberJoinReqBody reqBody) {
+    public RsData<MemberJoinRespBody> join(@RequestBody @Valid MemberJoinReqBody reqBody) {
 
-        return memberService.join(reqBody.username, reqBody.password, reqBody.nickname);
+       RsData<Member> joinRs = memberService.join(reqBody.username, reqBody.password, reqBody.nickname);
 
+       return joinRs.newDataOf( // 이렇게 하면 joinRs를 기반으로 하지만 아래의 값을 데이터로 한 것으로 나온다 newDataof 때문에
+               new MemberJoinRespBody(joinRs.getData())
+       );
     }
 
 }
