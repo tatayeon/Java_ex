@@ -37,6 +37,7 @@ public class ApiV1MemberController {
 
     @PostMapping("") //post는 생성
     public RsData<Member> join(@RequestBody @Valid MemberJoinReqBody reqBody) {
+
         return memberService.join(reqBody.username, reqBody.password, reqBody.nickname);
 
     }
