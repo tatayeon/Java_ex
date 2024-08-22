@@ -9,6 +9,7 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/api/v1/members")
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ApiV1MemberController {
 
     private final MemberService memberService;
@@ -44,6 +46,7 @@ public class ApiV1MemberController {
     //CRUD에 맞춰서 사용해야 한다.
     //클라이언트가 접속할 수 있는것 = 엔드포인트
     @PostMapping("") //post는 생성
+    @Transactional
     public RsData<MemberJoinRespBody> join(@RequestBody @Valid MemberJoinReqBody reqBody) {
 
        RsData<Member> joinRs = memberService.join(reqBody.username, reqBody.password, reqBody.nickname);

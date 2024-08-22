@@ -3,8 +3,10 @@ package com.ll.spring_boot_exam_2;
 
 import com.ll.spring_boot_exam_2.domain.Article;
 import com.ll.spring_boot_exam_2.domain.Member;
+import com.ll.spring_boot_exam_2.domain.Surl;
 import com.ll.spring_boot_exam_2.service.ArticleService;
 import com.ll.spring_boot_exam_2.service.MemberService;
+import com.ll.spring_boot_exam_2.service.SurlService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationRunner;
@@ -12,9 +14,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.annotation.Order;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 @Configuration
 @Profile("!prod") // =이거는 test or dev이다
@@ -25,12 +26,13 @@ public class NotProd {
         private NotProd self;
         private final ArticleService articleService;
         private final MemberService memberService;
+        private final SurlService surlService;
 
         @Bean
+        @Order(4)
         public ApplicationRunner initNotProd() {
             return args -> {
                 self.work1();
-                self.work2();
             };
         }
 
@@ -48,14 +50,13 @@ public class NotProd {
             Article article3 = articleService.write(member2,"제목1", "내용1").getData();
             Article article4 = articleService.write(member2,"제목2", "내용2").getData();
 
-            article1.setTitle("새로운 제목");
 
-            articleService.delete(article1.getId());
+            Surl surl1 = surlService.add("https://www.naver.com", "네이버", member1).getData();
+            Surl surl2 = surlService.add("https://www.daum.net", "다음", member1).getData();
+
+            Surl surl3 = surlService.add("https://www.naver.com", "네이버", member2).getData();
+            Surl surl4 = surlService.add("https://www.google.com", "구글", member2).getData();
+
         }
 
-        @Transactional
-        public void work2(){
-
-            List<Article> articles = articleService.findAll();
-        }
 }

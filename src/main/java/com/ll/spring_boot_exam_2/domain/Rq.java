@@ -11,13 +11,15 @@ import org.springframework.web.context.annotation.RequestScope;
 @RequestScope
 @RequiredArgsConstructor
 public class Rq {
+
+    //현제 로그인한 회원을 임시구현
     private final HttpServletRequest req;
     private final HttpServletResponse resp;
     private final MemberService memberService;
 
     public Member getMember() {
 
-        return memberService.getMember(1L);
+        return memberService.getMember(3L);
 
     }
 

@@ -4,6 +4,7 @@ import com.ll.spring_boot_exam_2.domain.Article;
 import com.ll.spring_boot_exam_2.service.ArticleService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -11,6 +12,7 @@ import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class ArticleController {
 
     private final ArticleService articleService;

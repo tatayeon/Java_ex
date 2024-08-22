@@ -8,6 +8,7 @@ import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.SurlService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -17,12 +18,14 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class SurlController {
     private final Rq rq;
     private final SurlService surlService;
 
     @GetMapping("/add ")
     @ResponseBody
+    @Transactional
     public RsData<Surl> add(String body, String url){
         Member member = rq.getMember(); //현제 브라우저로 로그인한 회원 정보
         return surlService.add(url ,body, member);
@@ -30,6 +33,7 @@ public class SurlController {
 
     @GetMapping("/s/{body}/**")
     @ResponseBody
+    @Transactional
     public RsData<Surl> add(@PathVariable String body,
                      HttpServletRequest request){
         Member member = rq.getMember();

@@ -1,6 +1,7 @@
 package com.ll.spring_boot_exam_2.controller;
 
 import com.ll.spring_boot_exam_2.domain.Todo;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -8,6 +9,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/todos")
+@Transactional(readOnly = true)
 public class TodoController {
 
     private long todosLastId = 0;
@@ -34,6 +36,7 @@ public class TodoController {
     }
 
     @GetMapping("/add")
+    @Transactional
     public Todo add(String body){
         Todo todo = Todo
                 .builder()
@@ -53,6 +56,7 @@ public class TodoController {
     }
 
     @GetMapping("modify/{id}")
+    @Transactional
     public boolean modifyTodo(@PathVariable("id") long id, String body){
         Todo todo = todos.stream()
                 .filter(

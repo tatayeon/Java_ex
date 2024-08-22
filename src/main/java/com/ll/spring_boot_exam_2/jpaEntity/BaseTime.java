@@ -21,6 +21,10 @@ public abstract class BaseTime extends BaseEntity {
     @LastModifiedDate
     private LocalDateTime modifyDate;
 
+    public void setCreateDate() {
+        setCreateDate(LocalDateTime.now());
+    }
+
     public void setModified() {
         setModifyDate(LocalDateTime.now());
     }

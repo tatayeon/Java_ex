@@ -45,4 +45,26 @@ public class SurlService {
         surl.increaseCount();
 
     }
+
+    @Transactional
+    public void delete(long id){
+        surlRepository.deleteById(id);
+
+    }
+
+    @Transactional
+    public List<Surl> findByAuthorOrderByIdDesc(Member author){
+        return surlRepository.findByAuthorOrderByIdDesc(author);
+
+    }
+
+
+    @Transactional
+    public RsData<Surl> modify(Surl surl, String body, String url) {
+        surl.setBody(body);
+        surl.setUrl(url); //더티체킹으로 따로 save를 하지 않아도 자동으로 저장해준다.
+
+        return RsData.of("수정 완료", surl);
+
+    }
 }
