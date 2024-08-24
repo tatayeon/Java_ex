@@ -71,6 +71,7 @@ public class ApiV1SurlController {
     @GetMapping("/{id}")
     @ResponseBody
     public RsData<SurlGetRespBody> get(@PathVariable long id){
+        Member member = rq.getMember();
 
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
@@ -91,7 +92,8 @@ public class ApiV1SurlController {
 
     @DeleteMapping("/{id}")
     @Transactional
-    public RsData<Empty> delete(@PathVariable long id){
+    public RsData<Empty> delete(@PathVariable long id, String actorUsername){
+        Member member = rq.getMember();
 
 
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
@@ -113,12 +115,9 @@ public class ApiV1SurlController {
     @GetMapping("")
     @ResponseBody
     public RsData<SurlsGetItemsRespBody> getitems(
-            String actorUserName
+            String actorUsername
     ){
-        Member loginedMember = memberService.findMemberByUsername(actorUserName).orElseThrow(GlobalException.E404::new);
-        rq.setMember(loginedMember);
-
-        Member member = rq.getMember();
+        Member member = rq.getMember(); //여기서 자기가 알아서 인증 처리를 하게 만들겠다.
 
         List<Surl> surls = surlService.findByAuthorOrderByIdDesc(member); //가능하면 이거 그대로 Service명도 맞춰주면 좋다.
 
@@ -127,8 +126,7 @@ public class ApiV1SurlController {
                         surls.stream()
                                 .map(SurlDTO::new)
                                 .toList()
-                )
-        );
+                ));
 
     }
 
@@ -151,8 +149,11 @@ public class ApiV1SurlController {
     @Transactional
     public RsData<SurlModifyRespBody> modify(
             @RequestBody @Valid SurlModifyReqBody reqBody,
-            @PathVariable long id
+            @PathVariable long id,
+            String actorUsername
     ){
+        Member member = rq.getMember();
+
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
         authService.checkCanModifySurl(rq.getMember(), surl);
@@ -162,7 +163,7 @@ public class ApiV1SurlController {
         return modifyRs.newDataOf(
                 new SurlModifyRespBody(
                         new SurlDTO(modifyRs.getData())
-                ));
+        ));
     }
 
 
