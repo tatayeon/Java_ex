@@ -27,6 +27,16 @@ public class Rq {
         String actorUsername = req.getParameter("actorUsername");
         String actorPassword = req.getParameter("actorPassword");
 
+        if( actorUsername == null || actorPassword == null){
+            String authorization = req.getHeader("Authorization");
+            if(authorization != null){
+                authorization = authorization.substring("bearer ".length());
+                String[] authorizationBits = authorization.split(" ", 2);//저 값들을 가져와서 bearer이 길이만큼 짜르고 뭐 하겠다.
+                actorUsername = authorizationBits[0];
+                actorPassword = authorizationBits.length == 2 ? authorizationBits[1] : null;
+            }
+        }
+
 //        if(Ut.str.isBlank(actorUsername)) throw new GlobalException("401-1","로그인이 필요합니다.");
 
         Member loginedMember = memberService.findMemberByUsername(actorUsername).orElseThrow(() -> new GlobalException("401-2", "인증정보가 올바르지 않습니다."));
