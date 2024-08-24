@@ -71,7 +71,6 @@ public class ApiV1SurlController {
     @GetMapping("/{id}")
     @ResponseBody
     public RsData<SurlGetRespBody> get(@PathVariable long id){
-        Member member = rq.getMember();
 
         Surl surl = surlService.findById(id).orElseThrow(GlobalException.E404::new);
 
