@@ -8,6 +8,7 @@ import com.ll.spring_boot_exam_2.dto.Empty;
 import com.ll.spring_boot_exam_2.dto.SurlDTO;
 import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.AuthService;
+import com.ll.spring_boot_exam_2.service.MemberService;
 import com.ll.spring_boot_exam_2.service.SurlService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -29,6 +30,7 @@ public class ApiV1SurlController {
     private final Rq rq;
     private final SurlService surlService;
     private final AuthService authService;
+    private final MemberService memberService;
 
     @Getter
     @AllArgsConstructor //우리는 이 방법도 있긴한데 DTO를 작성해서 하는 방법을 사용했었다. 알면 좋을 듯
@@ -108,9 +110,13 @@ public class ApiV1SurlController {
         private List<SurlDTO> items;
     }
 
-    @GetMapping("/")
+    @GetMapping("")
     @ResponseBody
-    public RsData<SurlsGetItemsRespBody> getitems(){
+    public RsData<SurlsGetItemsRespBody> getitems(
+            String actorUserName
+    ){
+        Member loginedMember = memberService.findMemberByUsername(actorUserName).orElseThrow(GlobalException.E404::new);
+        rq.setMember(loginedMember);
 
         Member member = rq.getMember();
 
