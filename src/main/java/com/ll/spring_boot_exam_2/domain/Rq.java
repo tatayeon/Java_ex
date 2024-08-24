@@ -2,6 +2,7 @@ package com.ll.spring_boot_exam_2.domain;
 
 import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.MemberService;
+import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -24,8 +25,10 @@ public class Rq {
             return member;  //최초의 한번은 모두 진행이 되지만 이걸로 인해서 두번째는 실행되지 않고 바로 넘겨준다. (메모리 캐싱)
         }
 
-        String actorUsername = req.getParameter("actorUsername");
-        String actorPassword = req.getParameter("actorPassword");
+        getCookieValue("actorUsername", null);
+
+        String actorUsername = getCookieValue("actorUsername", null);
+        String actorPassword = getCookieValue("actorPassword", null);
 
         if( actorUsername == null || actorPassword == null){
             String authorization = req.getHeader("Authorization");
@@ -47,6 +50,17 @@ public class Rq {
         member = loginedMember;
 
         return loginedMember;
+    }
+
+    private String getCookieValue(String cookieName, String defaultValue) {
+        if(req.getCookies() != null){
+            for (Cookie cookie : req.getCookies()) {
+                if(cookie.getName().equals(cookieName)){
+                    return cookie.getValue();
+                }
+            }
+        }
+        return defaultValue;
     }
 
     public String getCurrentUrlPath() {
