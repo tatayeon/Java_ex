@@ -52,7 +52,21 @@ public class Rq {
         return loginedMember;
     }
 
+
+
+    public String getCurrentUrlPath() {
+        return req.getRequestURI();
+    }
+
+    public void setStatusCode(int statusCode) {
+        resp.setStatus(statusCode);
+    }
+    //cookie 관련
     private String getCookieValue(String cookieName, String defaultValue) {
+        if(req.getCookies() == null){
+            return defaultValue;
+        }
+
         if(req.getCookies() != null){
             for (Cookie cookie : req.getCookies()) {
                 if(cookie.getName().equals(cookieName)){
@@ -62,12 +76,19 @@ public class Rq {
         }
         return defaultValue;
     }
+    //결국 로그아웃은 쿠키의 값을 지워버리는 것이다.
+    public void removeCookie(String cookieName) {
+        Cookie cookie = new Cookie(cookieName, null);
+        cookie.setMaxAge(0); //수명 단축
+        cookie.setPath("/");
+        resp.addCookie(cookie);
 
-    public String getCurrentUrlPath() {
-        return req.getRequestURI();
     }
 
-    public void setStatusCode(int statusCode) {
-        resp.setStatus(statusCode);
+    public void setCookie(String username, String actorUsername) {
+        Cookie cookie = new Cookie(actorUsername, username);
+        cookie.setMaxAge(60 * 60 * 24 * 7);
+        cookie.setPath("/");
+        resp.addCookie(cookie);
     }
 }
