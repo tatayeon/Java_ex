@@ -5,6 +5,7 @@ import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,6 +16,7 @@ import java.util.Optional;
 public class MemberService {
 
     private final MemberRepository memberRepository;
+    private final PasswordEncoder passwordEncoder; //비번 암호화
 
     @Transactional
     public RsData<Member> join(String username, String password, String nickname){
@@ -25,7 +27,7 @@ public class MemberService {
 
         Member member = Member.builder()
                 .username(username)
-                .password(password)
+                .password(passwordEncoder.encode(password)) //비번 암호화
                 .nickname(nickname)
                 .build();
 

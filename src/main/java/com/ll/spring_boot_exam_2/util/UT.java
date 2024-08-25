@@ -1,6 +1,6 @@
 package com.ll.spring_boot_exam_2.util;
 
-public class ut {
+public class UT {
     public static class str{
         public static boolean isBlank(String str) {
             return str == null || str.isBlank();

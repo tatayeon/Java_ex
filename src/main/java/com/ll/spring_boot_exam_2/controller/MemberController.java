@@ -5,7 +5,7 @@ import com.ll.spring_boot_exam_2.RsData;
 import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.MemberService;
-import com.ll.spring_boot_exam_2.util.ut;
+import com.ll.spring_boot_exam_2.util.UT;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Controller;
@@ -26,15 +26,15 @@ public class MemberController {
     @ResponseBody
     @Transactional
     public RsData join(String username, String password, String nickname){
-        if(ut.str.isBlank(username)){
+        if(UT.str.isBlank(username)){
             throw new GlobalException("400-1", "아이디를 입력해주세요"); //throw으로 하는 이유: 리턴 표기가 정밀하게 표현하기가 어렵다. + 그리고 ExceptionHandler사용
         }
 
-        if(ut.str.isBlank(password)){
+        if(UT.str.isBlank(password)){
             throw new GlobalException("400-1", "아이디를 입력해주세요");
         }
 
-        if(ut.str.isBlank(nickname)){
+        if(UT.str.isBlank(nickname)){
             throw new GlobalException("400-1", "닉네임을 입력해주세요");
         }
 
