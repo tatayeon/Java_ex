@@ -1,13 +1,22 @@
 package com.ll.spring_boot_exam_2.security;
 
+import com.ll.spring_boot_exam_2.RsData;
+import com.ll.spring_boot_exam_2.util.UT;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
+@RequiredArgsConstructor
+@Slf4j
 public class SecurityConfig {
     //시큐리티에 대한 설정들
+    private final CustomAuthenticationFilter customAuthenticationFilter;
+
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -36,7 +45,21 @@ public class SecurityConfig {
                         formLogin ->
                                 formLogin
                                         .permitAll()
-                );
+                ).exceptionHandling(
+                        exceptionHandling -> exceptionHandling
+                                .authenticationEntryPoint(
+                                        (request, response, authException) -> {
+                                            response.setContentType("application/json;charset=UTF-8");
+                                            response.setStatus(403);
+                                            response.getWriter().write(
+                                                    UT.json.toString(
+                                                            RsData.of("403-1", request.getRequestURI() + ", " + authException.getLocalizedMessage())
+                                                    )
+                                            );
+                                        }
+                                )
+                )
+                .addFilterBefore(customAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }

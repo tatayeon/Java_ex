@@ -62,7 +62,7 @@ public class Rq {
         resp.setStatus(statusCode);
     }
     //cookie 관련
-    private String getCookieValue(String cookieName, String defaultValue) {
+    public String getCookieValue(String cookieName, String defaultValue) {
         if(req.getCookies() == null){
             return defaultValue;
         }
