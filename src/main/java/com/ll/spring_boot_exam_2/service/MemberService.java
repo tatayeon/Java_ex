@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
+import java.util.UUID;
 
 @Service
 @RequiredArgsConstructor
@@ -29,6 +30,7 @@ public class MemberService {
                 .username(username)
                 .password(passwordEncoder.encode(password)) //비번 암호화
                 .nickname(nickname)
+                .apiKey(UUID.randomUUID().toString())
                 .build();
 
         memberRepository.save(member);
@@ -43,5 +45,20 @@ public class MemberService {
 
     public Member getMember(long id) {
         return memberRepository.getReferenceById(id);
+    }
+
+    public Optional<Member> findById(long id){
+        return memberRepository.findById(id);
+    }
+
+    public Optional<Member> findMemberByApiKey(String apiKey) {
+        return memberRepository.findMemberByApiKey(apiKey);
+    }
+
+    public boolean matchPassword(String password, String password1) {
+        if(passwordEncoder.matches(password, password1)){
+            return true;
+        }else
+            return false;
     }
 }

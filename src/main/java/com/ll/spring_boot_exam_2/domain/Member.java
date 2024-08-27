@@ -21,6 +21,9 @@ public class Member extends BaseTime {
 
     private String nickname;
 
+    @Column(unique = true)
+    private String apiKey; //고유의 암호화가 되어있는 키, 각각의 유저를 식별이 가능하다.
+
     public String getName(){
         return nickname;
     }

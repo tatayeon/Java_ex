@@ -1,13 +1,15 @@
 package com.ll.spring_boot_exam_2.domain;
 
-import com.ll.spring_boot_exam_2.exceptions.GlobalException;
 import com.ll.spring_boot_exam_2.service.MemberService;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.context.annotation.RequestScope;
+
+import java.util.Arrays;
 
 @Component
 @RequestScope
@@ -25,34 +27,13 @@ public class Rq {
             return member;  //최초의 한번은 모두 진행이 되지만 이걸로 인해서 두번째는 실행되지 않고 바로 넘겨준다. (메모리 캐싱)
         }
 
-        getCookieValue("actorUsername", null);
+        long id = Long.parseLong(SecurityContextHolder.getContext().getAuthentication().getName());
 
-        String actorUsername = getCookieValue("actorUsername", null);
-        String actorPassword = getCookieValue("actorPassword", null);
+        member = memberService.findById(id).get();
 
-        if( actorUsername == null || actorPassword == null){
-            String authorization = req.getHeader("Authorization");
-            if(authorization != null){
-                authorization = authorization.substring("bearer ".length());
-                String[] authorizationBits = authorization.split(" ", 2);//저 값들을 가져와서 bearer이 길이만큼 짜르고 뭐 하겠다.
-                actorUsername = authorizationBits[0];
-                actorPassword = authorizationBits.length == 2 ? authorizationBits[1] : null;
-            }
-        }
+        return member;
 
-//        if(Ut.str.isBlank(actorUsername)) throw new GlobalException("401-1","로그인이 필요합니다.");
-
-        Member loginedMember = memberService.findMemberByUsername(actorUsername).orElseThrow(() -> new GlobalException("401-2", "인증정보가 올바르지 않습니다."));
-        if(!loginedMember.getPassword().equals(actorPassword)){
-            throw new GlobalException("401-3", "비밀번호가 일치하지 않습니다.");
-        }
-
-        member = loginedMember;
-
-        return loginedMember;
     }
-
-
 
     public String getCurrentUrlPath() {
         return req.getRequestURI();
@@ -67,14 +48,11 @@ public class Rq {
             return defaultValue;
         }
 
-        if(req.getCookies() != null){
-            for (Cookie cookie : req.getCookies()) {
-                if(cookie.getName().equals(cookieName)){
-                    return cookie.getValue();
-                }
-            }
-        }
-        return defaultValue;
+        return Arrays.stream(req.getCookies())
+                .filter(cookie -> cookie.getName().equals(cookieName))
+                .findFirst()
+                .map(Cookie::getValue)
+                .orElse(defaultValue);
     }
     //결국 로그아웃은 쿠키의 값을 지워버리는 것이다.
     public void removeCookie(String cookieName) {
@@ -86,7 +64,7 @@ public class Rq {
     }
 
     public void setCookie(String username, String actorUsername) {
-        Cookie cookie = new Cookie(actorUsername, username);
+        Cookie cookie = new Cookie(username, actorUsername);
         cookie.setMaxAge(60 * 60 * 24 * 7);
         cookie.setPath("/");
         resp.addCookie(cookie);

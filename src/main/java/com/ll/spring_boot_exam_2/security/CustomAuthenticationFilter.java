@@ -29,37 +29,27 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     @Override
     @SneakyThrows
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) {
-        String actorUsername = rq.getCookieValue("actorUsername", null);
-        String actorPassword = rq.getCookieValue("actorPassword", null);
+        String apiKey = rq.getCookieValue("apiKey", null);
 
-        if( actorUsername == null || actorPassword == null){
+        if(apiKey == null){
             String authorization = req.getHeader("Authorization");
             if(authorization != null){
-                authorization = authorization.substring("bearer ".length());
-                String[] authorizationBits = authorization.split(" ", 2);//저 값들을 가져와서 bearer이 길이만큼 짜르고 뭐 하겠다.
-                actorUsername = authorizationBits[0];
-                actorPassword = authorizationBits.length == 2 ? authorizationBits[1] : null;
+                apiKey = authorization.substring("bearer".length());
             }
         }
 
-        if(UT.str.isBlank(actorUsername) || UT.str.isBlank(actorPassword)){
+        if(UT.str.isBlank(apiKey)){
             filterChain.doFilter(req, resp);
             return;
         }
 
-        Member loginedMember = memberService.findMemberByUsername(actorUsername).orElseThrow(null);
+        Member loginedMember = memberService.findMemberByApiKey(apiKey).orElse(null);
 
         if(loginedMember == null){
             filterChain.doFilter(req, resp);
             return;
         }
-
-        if(!loginedMember.getPassword().equals(actorPassword)){
-            filterChain.doFilter(req, resp);
-            return;
-        }
-
-        User user = new User(loginedMember.getUsername(), "", List.of());
+        User user = new User(loginedMember.getId() + "", "", List.of());
         Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication); //인증 정보 만드는 것 그냥 외워
