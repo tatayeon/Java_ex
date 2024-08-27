@@ -21,6 +21,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+        //아래에 있는 것들은 인증이 필요없이 들어 갈 수 있는 부분이다.
         http
                 .authorizeRequests(authorizeRequests ->
                         authorizeRequests

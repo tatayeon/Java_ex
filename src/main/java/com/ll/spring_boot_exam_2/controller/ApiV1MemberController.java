@@ -6,6 +6,8 @@ import com.ll.spring_boot_exam_2.domain.Rq;
 import com.ll.spring_boot_exam_2.dto.Empty;
 import com.ll.spring_boot_exam_2.dto.MemberDTO;
 import com.ll.spring_boot_exam_2.exceptions.GlobalException;
+import com.ll.spring_boot_exam_2.security.AppConfig;
+import com.ll.spring_boot_exam_2.security.AuthTokenService;
 import com.ll.spring_boot_exam_2.service.MemberService;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
@@ -23,6 +25,7 @@ public class ApiV1MemberController {
 
     private final MemberService memberService;
     private final Rq rq;
+    private final AuthTokenService authTokenService;
 
     //이렇게 요청이 들어올 때의 바디를 따로 빼서 만들어도 가능하다~
     //여기는 내가 입력받을 것
@@ -89,6 +92,8 @@ public class ApiV1MemberController {
             throw new GlobalException("401-2", "비밀번호가 일치하지 않습니다.");
         }
 
+        String accessToken = authTokenService.genToken(member, AppConfig.getAccessTokenExpirationSec());
+        rq.setCookie("accessToken", accessToken);
         rq.setCookie("apiKey", member.getApiKey());
 
         return RsData.of(
