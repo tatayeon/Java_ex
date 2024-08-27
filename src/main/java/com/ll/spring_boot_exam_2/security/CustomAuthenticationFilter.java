@@ -1,6 +1,5 @@
 package com.ll.spring_boot_exam_2.security;
 
-import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.domain.Rq;
 import com.ll.spring_boot_exam_2.service.MemberService;
 import com.ll.spring_boot_exam_2.util.UT;
@@ -18,38 +17,44 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.util.List;
+import java.util.Map;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class CustomAuthenticationFilter extends OncePerRequestFilter {
     private final MemberService memberService;
+    private final AuthTokenService authTokenService;
     private final Rq rq;
 
     @Override
     @SneakyThrows
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) {
-        String apiKey = rq.getCookieValue("apiKey", null);
+        String accessToken = rq.getCookieValue("accessToken", null);
 
-        if(apiKey == null){
+        if(accessToken == null){
             String authorization = req.getHeader("Authorization");
             if(authorization != null){
-                apiKey = authorization.substring("bearer".length());
+                accessToken = authorization.substring("bearer".length());
             }
         }
 
-        if(UT.str.isBlank(apiKey)){
+        if(UT.str.isBlank(accessToken)){
             filterChain.doFilter(req, resp);
             return;
         }
 
-        Member loginedMember = memberService.findMemberByApiKey(apiKey).orElse(null);
-
-        if(loginedMember == null){
+        if(!authTokenService.validateToken(accessToken)){
             filterChain.doFilter(req, resp);
             return;
         }
-        User user = new User(loginedMember.getId() + "", "", List.of());
+
+        //회원정보 얻는 방벙
+        Map<String, Object> accessTokenData = authTokenService.getDataFrom(accessToken);
+
+        long id =  (int)accessTokenData.get("id");
+
+        User user = new User(id + "", "", List.of());
         Authentication authentication = new UsernamePasswordAuthenticationToken(user, null, user.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authentication); //인증 정보 만드는 것 그냥 외워
