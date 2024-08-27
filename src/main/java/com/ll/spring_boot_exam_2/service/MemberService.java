@@ -30,7 +30,7 @@ public class MemberService {
                 .username(username)
                 .password(passwordEncoder.encode(password)) //비번 암호화
                 .nickname(nickname)
-                .apiKey(UUID.randomUUID().toString())
+                .refreshToken(UUID.randomUUID().toString())
                 .build();
 
         memberRepository.save(member);
@@ -51,8 +51,8 @@ public class MemberService {
         return memberRepository.findById(id);
     }
 
-    public Optional<Member> findMemberByApiKey(String apiKey) {
-        return memberRepository.findMemberByApiKey(apiKey);
+    public Optional<Member> findMemberByARefreshToken(String refreshToken) {
+        return memberRepository.findMemberByRefreshToken(refreshToken);
     }
 
     public boolean matchPassword(String password, String password1) {

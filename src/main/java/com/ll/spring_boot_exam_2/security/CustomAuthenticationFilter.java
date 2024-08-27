@@ -1,5 +1,6 @@
 package com.ll.spring_boot_exam_2.security;
 
+import com.ll.spring_boot_exam_2.domain.Member;
 import com.ll.spring_boot_exam_2.domain.Rq;
 import com.ll.spring_boot_exam_2.service.MemberService;
 import com.ll.spring_boot_exam_2.util.UT;
@@ -31,22 +32,39 @@ public class CustomAuthenticationFilter extends OncePerRequestFilter {
     @SneakyThrows
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse resp, FilterChain filterChain) {
         String accessToken = rq.getCookieValue("accessToken", null);
+        String refreshToken = rq.getCookieValue("refreshToken", null);
 
-        if(accessToken == null){
+        if(accessToken == null || refreshToken == null){
             String authorization = req.getHeader("Authorization");
             if(authorization != null){
-                accessToken = authorization.substring("bearer".length());
+                String[] authorizationBits = authorization.substring("bearer".length()).split(" ", 2);
+
+                if(authorizationBits.length == 2){
+                    accessToken = authorizationBits[0];
+                    refreshToken = authorizationBits[1];
+                }
             }
         }
 
-        if(UT.str.isBlank(accessToken)){
+        if(UT.str.isBlank(accessToken) || UT.str.isBlank(refreshToken)){
             filterChain.doFilter(req, resp);
             return;
         }
 
-        if(!authTokenService.validateToken(accessToken)){
-            filterChain.doFilter(req, resp);
-            return;
+        if(!authTokenService.validateToken(accessToken)){ //만료되었을때 refresh로 갱신 시도
+            Member member = memberService.findMemberByARefreshToken(refreshToken).orElse(null);
+
+            if(member == null){
+                filterChain.doFilter(req, resp);
+                return;
+            }
+
+            String newAccessToken = authTokenService.genToken(member, AppConfig.getAccessTokenExpirationSec());
+            rq.setCookie("accessToken", newAccessToken);
+
+            //log.debug("renewaccessToken:{}", newAccessToken); //잘 되는지 확인
+
+            accessToken = newAccessToken;
         }
 
         //회원정보 얻는 방벙

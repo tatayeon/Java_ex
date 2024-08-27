@@ -12,5 +12,5 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     //보통 결과가 최대 1개라면 보통 Optional을 리턴하고 그 외에는 List로 리턴한다.
     Optional<Member> findByUsername(String username);
 
-    Optional<Member> findMemberByApiKey(String apiKey);
+    Optional<Member> findMemberByRefreshToken(String refreshToken);
 }
